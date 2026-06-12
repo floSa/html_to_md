@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head><title>Test des formules - MonSite</title></head><body>
+<main><article>
+<h1>Page avec des maths</h1>
+<p>Cette page de test vérifie la conversion des formules mathématiques rendues
+par les trois moteurs les plus courants du web. Elle contient assez de texte
+pour dépasser le seuil minimal d'extraction du contenu principal.</p>
+
+<p>KaTeX inline : l'énergie vaut
+<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>E</mi></mrow><annotation encoding="application/x-tex">E = mc^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base">E=mc2</span></span></span>
+dans le texte.</p>
+
+<p>KaTeX en bloc :</p>
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow></mrow><annotation encoding="application/x-tex">\int_0^\infty e^{-x^2} dx = \frac{\sqrt{\pi}}{2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true">gibberish</span></span></span>
+
+<p>MathJax v2 inline : la moyenne
+<span class="MathJax_Preview"></span><span class="MathJax">x¯</span><script type="math/tex">\bar{x} = \frac{1}{n}\sum_{i=1}^n x_i</script>
+est un estimateur.</p>
+
+<p>MathJax v2 en bloc :</p>
+<div class="MathJax_Display">rendu</div><script type="math/tex; mode=display">\sigma^2 = \frac{1}{n}\sum_{i=1}^n (x_i - \bar{x})^2</script>
+
+<p>MathJax v3 : la variance
+<mjx-container display="false"><svg><g>paths</g></svg><mjx-assistive-mml><math><semantics><mrow></mrow><annotation encoding="application/x-tex">\mathrm{Var}(X)</annotation></semantics></math></mjx-assistive-mml></mjx-container>
+mesure la dispersion.</p>
+</article></main>
+</body></html>

@@ -1,0 +1,23 @@
+# Profils d'extraction par site — OPTIONNEL.
+#
+# Par défaut ce fichier est vide : l'outil fonctionne de manière générique
+# (nettoyage SingleFile + extraction readability). N'ajoutez un profil que si
+# un site précis donne de mauvais résultats avec le mode générique.
+#
+# Pour chaque profil :
+#   detect  : sélecteur CSS — si au moins un élément matche, le profil s'applique.
+#   content : sélecteur CSS du conteneur de contenu utile (seuls les éléments
+#             de plus haut niveau sont conservés, les imbriqués sont ignorés).
+#   strip   : (optionnel) sélecteurs à supprimer À L'INTÉRIEUR du contenu
+#             extrait (bannières, navigation interne...).
+#
+# Exemple :
+#
+# profiles:
+#   monsite:
+#     detect: ".article-reader"
+#     content: ".article-reader main"
+#     strip:
+#       - ".newsletter-banner"
+
+profiles: {}
