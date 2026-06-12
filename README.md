@@ -25,11 +25,20 @@ Chaque fichier passe par cinq étapes :
 1. Installer l'extension :
    - Chrome / Edge : [SingleFile sur le Chrome Web Store](https://chromewebstore.google.com/detail/singlefile/mpiodijhokgodhhofbcjdecpffjipkle)
    - Firefox : [SingleFile sur addons.mozilla.org](https://addons.mozilla.org/fr/firefox/addon/single-file/)
-2. Dans les options de l'extension (clic droit sur l'icône → Options), section **Contenu HTML**, activer :
-   - **Supprimer les scripts**
-   - **Supprimer les éléments cachés**
-   - **Supprimer les styles inutilisés**
+2. Dans les options de l'extension (clic droit sur l'icône → *Gérer l'extension* → Options) :
 
+   | Section | Option | État |
+   |---|---|---|
+   | Contenu HTML | compresser le contenu HTML | ✅ cocher |
+   | Contenu HTML | supprimer les éléments cachés | ✅ cocher |
+   | Contenu HTML | sauvegarder la page brute | ❌ laisser décoché (sinon les scripts et le DOM non rendu sont gardés) |
+   | Contenu HTML | ne pas inclure la date de sauvegarde | ❌ laisser décoché |
+   | Feuilles de style | supprimer les styles inutilisés | ✅ cocher |
+   | Feuilles de style | supprimer les feuilles de styles pour les appareils autres que des écrans | ✅ cocher |
+   | Images | supprimer les images pour des résolutions d'écran alternatives | ✅ cocher |
+   | Polices de caractère | supprimer les polices inutilisées / alternatives | ✅ cocher les deux |
+
+   Les scripts sont supprimés par défaut, pas d'option à cocher pour ça.
    → fichiers plus petits et plus propres dès la capture.
 3. Sur la page à sauvegarder : clic sur l'icône SingleFile → un fichier `.html` autonome est téléchargé.
 
