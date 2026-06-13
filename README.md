@@ -8,11 +8,11 @@ Au passage il gère : extraction du contenu principal (conteneurs sémantiques o
 
 ---
 
-## 🌿 Ce dépôt a deux versions, sur deux branches
+## Ce dépôt a deux versions, sur deux branches
 
 > La branche `main` ne contient que cette présentation. Choisissez la version qui correspond à votre usage.
 
-### 🖥️ Branche [`cli`](../../tree/cli) — ligne de commande
+### Branche [`cli`](../../tree/cli) — ligne de commande
 
 La version **outil Python** : on installe le paquet et on convertit des fichiers ou des dossiers depuis le terminal.
 
@@ -26,7 +26,7 @@ python3 -m venv .venv && .venv/bin/pip install -e .
 
 → Voir le [README de la branche cli](../../blob/cli/README.md).
 
-### 🌐 Branche [`app`](../../tree/app) — application web
+### Branche [`app`](../../tree/app) — application web
 
 La version **service conteneurisé** : une interface web (Streamlit) lancée via Docker Compose, avec :
 
