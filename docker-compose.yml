@@ -1,0 +1,25 @@
+services:
+  webapp:
+    build: .
+    image: html_to_md
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./HTML2MD:/app/HTML2MD
+    environment:
+      HTML2MD_ROOT: /app/HTML2MD
+    restart: unless-stopped
+
+  watcher:
+    build: .
+    image: html_to_md
+    command: ["python", "app/watcher.py"]
+    volumes:
+      - ./HTML2MD:/app/HTML2MD
+    environment:
+      HTML2MD_ROOT: /app/HTML2MD
+      # Intervalle de scan en secondes (3600 = toutes les heures).
+      WATCH_INTERVAL_SECONDS: "3600"
+    restart: unless-stopped
+    depends_on:
+      - webapp

@@ -3,3 +3,10 @@ __pycache__/
 *.egg-info/
 out/
 samples/
+
+# Données de travail de la version app (garder seulement la structure)
+HTML2MD/HTMLs/*
+HTML2MD/MDs/*
+!HTML2MD/HTMLs/.gitkeep
+!HTML2MD/MDs/.gitkeep
+HTML2MD/.processed.json

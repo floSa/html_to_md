@@ -1,0 +1,9 @@
+.git
+.venv
+__pycache__
+*.egg-info
+out
+samples
+HTML2MD/HTMLs/*
+HTML2MD/MDs/*
+HTML2MD/.processed.json
