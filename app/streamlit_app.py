@@ -23,9 +23,9 @@ from conversion import (  # type: ignore[import-not-found]
 )
 import watcher  # type: ignore[import-not-found]
 
-st.set_page_config(page_title="html_to_md", page_icon="📄", layout="centered")
+st.set_page_config(page_title="html_to_md", layout="centered")
 
-_STATUS_ICON = {"ok": "✅", "review": "⚠️", "error": "❌"}
+_STATUS_ICON = {"ok": "✅", "review": "!", "error": "❌"}
 
 
 def _results_table(items: list[ConvertedFile]) -> None:
@@ -150,7 +150,7 @@ def tab_watched() -> None:
         st.success(f"{len(results)} fichier(s) converti(s).")
 
 
-st.title("📄 html_to_md")
+st.title("html_to_md")
 st.caption("Captures SingleFile → Markdown propre pour l'ingestion RAG.")
 
 upload, folder, watched = st.tabs(
