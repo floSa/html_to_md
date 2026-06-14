@@ -17,7 +17,7 @@ git switch app
 docker compose up --build
 ```
 
-Puis ouvrir **http://localhost:8501**.
+Puis ouvrir **http://localhost:8505**.
 
 Deux services sont lancés :
 
