@@ -66,3 +66,42 @@ docker-compose.yml
 ```
 
 Le détail du pipeline de conversion (hygiène, extraction, images, formules LaTeX, garde-fou) est documenté dans la branche [`cli`](../../blob/cli/README.md).
+
+## Interface en ligne de commande
+
+Le cœur est aussi exposé par la commande `html2md` (installée via `pip install -e .`, point d'entrée [`html_to_md.cli:main`](src/html_to_md/cli.py)) :
+
+```bash
+html2md INPUT [-o OUTPUT] [--config CONFIG] [--min-image-bytes N]
+```
+
+| Argument | Défaut | Rôle |
+|---|---|---|
+| `input` | — (requis) | Fichier `.html` ou dossier traité **récursivement** |
+| `-o`, `--output` | `./out` | Dossier de sortie (l'arborescence d'entrée est reproduite) |
+| `--config` | `config/selectors.yaml` | YAML des profils d'extraction par site |
+| `--min-image-bytes` | `4096` | Taille minimale (octets) pour exporter une image data-URI ; en dessous elle est jugée icône d'UI et supprimée |
+
+Chaque fichier est marqué `ok`, `à vérifier` (contenu peut-être sur-nettoyé) ou `erreur` ; la commande renvoie le **code de sortie 1** s'il y a au moins une erreur, `0` sinon. Un fichier corrompu n'interrompt pas le lot.
+
+## Documentation
+
+| Document | Contenu |
+|---|---|
+| [docs/CADRAGE.md](docs/CADRAGE.md) | Le **pourquoi** : pitch, périmètre, hypothèses, décisions produit |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Le **comment** : modules, pipeline de conversion, stratégie d'extraction, formules, décisions techniques |
+
+## Licences & composants
+
+| Composant | Rôle | Licence usuelle |
+|---|---|---|
+| beautifulsoup4 | Parsing HTML | MIT |
+| lxml | Parseur / nettoyage HTML | BSD-3-Clause |
+| readability-lxml | Extraction générique du contenu | Apache-2.0 |
+| markdownify | Conversion HTML → Markdown | MIT |
+| PyYAML | Lecture des profils d'extraction | MIT |
+| Streamlit | Interface web (extra `app`) | Apache-2.0 |
+| Python | Langage / runtime (`python:3.12-slim`) | PSF |
+| **Ce projet** | Code applicatif | MIT — Copyright (c) 2026 floSa — `<à confirmer>` : aucun fichier `LICENSE` ni champ `license` dans `pyproject.toml` |
+
+> ⚠️ Licences des dépendances indiquées d'après l'usage courant de ces briques ; elles **changent parfois selon les versions**. À vérifier avant tout usage engageant.
