@@ -80,7 +80,7 @@ Hypothèses **non lisibles dans le code** — à confirmer par l'auteur :
 
 ## 6. Décisions produit
 
-**Figées ✅** (lisibles dans le code)
+**Décisions figées** (lisibles dans le code)
 - **Un seul cœur, trois surfaces** : CLI, UI web, watcher partagent `html_to_md.core`.
 - **Signaler plutôt que masquer** : les conversions douteuses sont marquées `review`,
   pas supprimées ni « réparées » en silence.
@@ -88,7 +88,7 @@ Hypothèses **non lisibles dans le code** — à confirmer par l'auteur :
   (`config/selectors.yaml` vide par défaut).
 - **Streamlit en dépendance optionnelle** : le cœur/CLI s'installe sans l'UI.
 
-**À trancher 🔲**
+**À trancher**
 - **Fichier `LICENSE` du dépôt** : absent, et aucun champ `license` dans
   `pyproject.toml`. La licence effective est `<à confirmer>` (voir README).
 - **Ajout d'une suite de tests** : des fixtures existent mais aucun `test_*.py`.

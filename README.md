@@ -4,6 +4,11 @@
 
 Application web qui nettoie les captures **SingleFile** (Chrome/Firefox) et les convertit en **Markdown propre** pour l'ingestion RAG — même cœur de conversion que la branche `cli`, enveloppé dans une interface **Streamlit** et un service **Docker Compose**.
 
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![uv](https://img.shields.io/badge/uv-package_manager-DE5FE9?logo=uv&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.36+-FF4B4B?logo=streamlit&logoColor=white)
+
 ## Ce que fait l'app
 
 - **Déposer des fichiers** : glisser-déposer une ou plusieurs captures `.html` (le format est vérifié), conversion, puis téléchargement du `.md` (ou d'un `.zip` Markdown + images si plusieurs fichiers).
@@ -104,4 +109,4 @@ Chaque fichier est marqué `ok`, `à vérifier` (contenu peut-être sur-nettoyé
 | Python | Langage / runtime (`python:3.12-slim`) | PSF |
 | **Ce projet** | Code applicatif | MIT — Copyright (c) 2026 floSa — `<à confirmer>` : aucun fichier `LICENSE` ni champ `license` dans `pyproject.toml` |
 
-> ⚠️ Licences des dépendances indiquées d'après l'usage courant de ces briques ; elles **changent parfois selon les versions**. À vérifier avant tout usage engageant.
+> **Attention** : licences des dépendances indiquées d'après l'usage courant de ces briques ; elles **changent parfois selon les versions**. À vérifier avant tout usage engageant.
