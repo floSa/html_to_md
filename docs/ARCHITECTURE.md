@@ -66,12 +66,12 @@ Source : [`docker-compose.yml`](../docker-compose.yml), [`Dockerfile`](../Docker
 | Couche | Technologie | Version (contrainte) |
 |---|---|---|
 | Langage | Python | `>=3.10` (image Docker : `python:3.12-slim`) |
-| Parsing HTML | beautifulsoup4 | `>=4.12` |
-| Parseur / nettoyage | lxml (`[html_clean]`) | `>=5.0` |
-| Extraction générique | readability-lxml | `>=0.8` |
-| HTML → Markdown | markdownify | `>=0.13` |
-| Config des profils | PyYAML | `>=6.0` |
-| Interface web (extra `app`) | Streamlit | `>=1.36` |
+| Parsing HTML | beautifulsoup4 | `>=4.15` |
+| Parseur / nettoyage | lxml (`[html_clean]`) | `>=6.1` |
+| Extraction générique | readability-lxml | `>=0.8.4` |
+| HTML → Markdown | markdownify | `>=1.2` |
+| Config des profils | PyYAML | `>=6.0.3` |
+| Interface web (extra `app`) | Streamlit | `>=1.58` |
 
 Source : [`pyproject.toml`](../pyproject.toml). Streamlit est une dépendance
 **optionnelle** (`pip install ".[app]"`) : le cœur et la CLI n'en ont pas besoin.

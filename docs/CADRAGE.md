@@ -66,12 +66,12 @@ Hypothèses **non lisibles dans le code** — à confirmer par l'auteur :
 
 | Brique | Choix | Licence usuelle |
 |---|---|---|
-| Parsing HTML | beautifulsoup4 `>=4.12` | MIT |
-| Parseur / nettoyage | lxml `>=5.0` | BSD-3-Clause |
-| Extraction générique | readability-lxml `>=0.8` | Apache-2.0 |
-| HTML → Markdown | markdownify `>=0.13` | MIT |
-| Profils de config | PyYAML `>=6.0` | MIT |
-| Interface web | Streamlit `>=1.36` | Apache-2.0 |
+| Parsing HTML | beautifulsoup4 `>=4.15` | MIT |
+| Parseur / nettoyage | lxml `>=6.1` | BSD-3-Clause |
+| Extraction générique | readability-lxml `>=0.8.4` | Apache-2.0 |
+| HTML → Markdown | markdownify `>=1.2` | MIT |
+| Profils de config | PyYAML `>=6.0.3` | MIT |
+| Interface web | Streamlit `>=1.58` | Apache-2.0 |
 
 > Licences : valeurs usuelles pour ces briques, **à vérifier** avant tout usage engageant
 > (voir la note du tableau dans le [README](../README.md#licences--composants)).
