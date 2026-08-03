@@ -4,17 +4,17 @@ version = "0.1.0"
 description = "Nettoie les captures SingleFile et les convertit en Markdown propre pour l'ingestion RAG"
 requires-python = ">=3.10"
 dependencies = [
-    "beautifulsoup4>=4.12",
-    "lxml[html_clean]>=5.0",
-    "readability-lxml>=0.8",
-    "markdownify>=0.13",
-    "PyYAML>=6.0",
+    "beautifulsoup4>=4.15",
+    "lxml[html_clean]>=6.1",
+    "readability-lxml>=0.8.4",
+    "markdownify>=1.2",
+    "PyYAML>=6.0.3",
 ]
 
 [project.optional-dependencies]
 # Dépendances de la version « app » (interface web). Le cœur de conversion
 # n'en a pas besoin ; installer avec `pip install .[app]`.
-app = ["streamlit>=1.36"]
+app = ["streamlit>=1.58"]
 
 [project.scripts]
 html2md = "html_to_md.cli:main"
