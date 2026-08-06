@@ -133,7 +133,7 @@ Chaque fichier est marqué `ok`, `à vérifier` (contenu peut-être sur-nettoyé
 uv run pytest
 ```
 
-**72 tests** couvrent les deux pipelines, la CLI et l'interface. Les documents Word et PowerPoint sont fabriqués à la volée plutôt que versionnés. Détail par fichier : [docs/ARCHITECTURE.md §10](docs/ARCHITECTURE.md#10-tests).
+**74 tests** couvrent les deux pipelines, la CLI et l'interface. Les documents Word et PowerPoint sont fabriqués à la volée plutôt que versionnés. Détail par fichier : [docs/ARCHITECTURE.md §10](docs/ARCHITECTURE.md#10-tests).
 
 ## Structure du projet
 
@@ -151,7 +151,7 @@ src/html_to_md/
 ├── maths.py           # récupération des formules en LaTeX
 ├── convert.py         # Markdown, images, tableaux, titres
 └── naming.py          # nommage des sorties et collisions
-tests/                 # 72 tests + fixtures HTML
+tests/                 # 74 tests + fixtures HTML
 config/selectors.yaml  # profils d'extraction par site (vide par défaut)
 HTML2MD/
 ├── HTMLs/             # déposer ici les documents
