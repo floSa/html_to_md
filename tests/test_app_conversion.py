@@ -7,8 +7,6 @@ import sys
 import zipfile
 from pathlib import Path
 
-import pytest
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "app"))
 
 import conversion  # noqa: E402
