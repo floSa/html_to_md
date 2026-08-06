@@ -316,7 +316,7 @@ passée.
 | [`test_core_html.py`](../tests/test_core_html.py) | Pipeline page web de bout en bout : isolation du contenu, nommage, images, formules, collisions |
 | [`test_core_documents.py`](../tests/test_core_documents.py) | Pipeline document : images liées, tableaux, ordre du texte, noms de fichiers hostiles, fichiers illisibles |
 | [`test_formats.py`](../tests/test_formats.py) | Chaque format annoncé se convertit réellement, avec garde-fou anti-oubli |
-| [`test_cli.py`](../tests/test_cli.py) | Lots multi-formats, arborescence reproduite, codes de sortie, document cassé au milieu d'un lot |
+| [`test_cli.py`](../tests/test_cli.py) | Lots multi-formats, arborescence reproduite, codes de sortie, document cassé au milieu d'un lot, profils absents ou introuvables |
 | [`test_app_conversion.py`](../tests/test_app_conversion.py) | Conversion en mémoire, archive ZIP, remontée des échecs |
 | [`test_app_ui.py`](../tests/test_app_ui.py) | L'interface se rend sans exception et propose tous les formats |
 
