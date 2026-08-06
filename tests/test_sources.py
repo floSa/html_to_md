@@ -72,6 +72,25 @@ class TestIngestion:
         assert ingested.markdown.endswith("\n")
 
 
+class TestMessageDeDependanceManquante:
+    """Le message doit se copier tel quel dans un terminal : un extra qui
+    n'existe pas envoie l'utilisateur dans le mur."""
+
+    def test_lextra_cite_est_declare_dans_le_projet(self) -> None:
+        import tomllib
+
+        pyproject = Path(__file__).resolve().parents[1] / "pyproject.toml"
+        declared = tomllib.loads(pyproject.read_text(encoding="utf-8"))
+        extras = declared["project"]["optional-dependencies"]
+
+        assert sources.DOCS_EXTRA in extras
+
+    def test_le_message_indique_la_commande(self) -> None:
+        message = str(sources._missing_dependency())
+
+        assert f"--extra {sources.DOCS_EXTRA}" in message
+
+
 class TestNettoyageDesImagesFantomes:
     """Les formats texte laissent des liens d'image tronqués, qui ne pointent
     sur rien. Ils doivent disparaître sans emporter le texte alternatif."""
