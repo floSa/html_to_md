@@ -11,7 +11,21 @@ from .core import Result, process_file
 from .extract import load_profiles
 from .sources import SUPPORTED_EXTENSIONS, iter_sources
 
-DEFAULT_CONFIG = Path(__file__).resolve().parents[2] / "config" / "selectors.yaml"
+CONFIG_NAME = Path("config") / "selectors.yaml"
+
+# Emplacements essayés quand aucun --config n'est donné : la racine du dépôt
+# (installation en mode développement) puis le dossier courant. Une fois le
+# paquet installé ailleurs, le premier chemin ne pointe plus sur rien — d'où
+# le second, et le repli sans profil.
+DEFAULT_CONFIG_PATHS = (
+    Path(__file__).resolve().parents[2] / CONFIG_NAME,
+    Path.cwd() / CONFIG_NAME,
+)
+
+
+def _default_config() -> Path | None:
+    """Premier fichier de profils trouvé, ou ``None`` s'il n'y en a pas."""
+    return next((path for path in DEFAULT_CONFIG_PATHS if path.is_file()), None)
 
 
 def _iter_sources(input_path: Path) -> list[Path]:
@@ -42,8 +56,11 @@ def main(argv: list[str] | None = None) -> int:
         help="dossier de sortie (défaut : ./out)",
     )
     parser.add_argument(
-        "--config", type=Path, default=DEFAULT_CONFIG,
-        help="YAML des profils d'extraction (défaut : config/selectors.yaml)",
+        "--config", type=Path, default=None,
+        help=(
+            f"YAML des profils d'extraction (défaut : {CONFIG_NAME} s'il existe, "
+            "sinon mode générique sans profil)"
+        ),
     )
     parser.add_argument(
         "--min-image-bytes", type=int, default=MIN_IMAGE_BYTES,
@@ -57,10 +74,13 @@ def main(argv: list[str] | None = None) -> int:
 
     if not args.input.exists():
         parser.error(f"introuvable : {args.input}")
-    if not args.config.exists():
+    # Une config demandée explicitement et absente est une erreur ; une config
+    # par défaut absente ne l'est pas — les profils sont optionnels.
+    if args.config is not None and not args.config.is_file():
         parser.error(f"config introuvable : {args.config}")
 
-    profiles = load_profiles(args.config)
+    config = args.config or _default_config()
+    profiles = load_profiles(config) if config else []
     sources = _iter_sources(args.input)
     if not sources:
         print(f"Aucun fichier convertible trouvé ({formats}).", file=sys.stderr)
