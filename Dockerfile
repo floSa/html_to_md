@@ -6,7 +6,7 @@ WORKDIR /app
 COPY pyproject.toml ./
 COPY src ./src
 COPY config ./config
-RUN pip install --no-cache-dir ".[app]"
+RUN pip install --no-cache-dir ".[app,docs]"
 
 COPY app ./app
 

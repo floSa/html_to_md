@@ -59,9 +59,14 @@ def article_slug(title: str) -> str:
 
 
 def output_basename(site: str, article: str, fallback: str) -> str:
-    """Nom de base du fichier de sortie (sans extension)."""
+    """Nom de base du fichier de sortie (sans extension).
+
+    Le dernier repli évite qu'un nom entièrement fait de ponctuation
+    (« --- ») ne se réduise à une chaîne vide, qui produirait un « .md »
+    caché et sans nom.
+    """
     base = "_".join(part for part in (site, article) if part)
-    return base or _slugify(fallback)
+    return base or _slugify(fallback) or "document"
 
 
 def _slugify(text: str) -> str:
