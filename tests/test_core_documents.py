@@ -93,6 +93,30 @@ class TestPowerPoint:
         assert "data:image" not in result.output.read_text(encoding="utf-8")
 
 
+class TestNomsDeFichiersHostiles:
+    def test_un_nom_sans_caractere_utile_reste_nommable(
+        self, tmp_path: Path, docx_factory, no_profiles
+    ) -> None:
+        """Un nom fait de ponctuation donnerait un « .md » caché et sans nom."""
+        source = tmp_path / "---.docx"
+        source.write_bytes(docx_factory().read_bytes())
+
+        result = process_file(source, tmp_path / "out", no_profiles)
+
+        assert result.output.name == "document.md"
+        assert not result.output.name.startswith(".")
+
+    def test_les_accents_et_espaces_sont_normalises(
+        self, tmp_path: Path, docx_factory, no_profiles
+    ) -> None:
+        source = tmp_path / "Étude de marché 2026.docx"
+        source.write_bytes(docx_factory().read_bytes())
+
+        result = process_file(source, tmp_path / "out", no_profiles)
+
+        assert result.output.name == "Étude_de_marché_2026.md"
+
+
 class TestDocumentIllisible:
     def test_un_fichier_corrompu_remonte_une_erreur(
         self, tmp_path: Path, no_profiles
