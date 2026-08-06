@@ -5,6 +5,9 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 
+import pytest
+
+from html_to_md import cli
 from html_to_md.cli import main
 
 from conftest import FIXTURES
@@ -44,6 +47,32 @@ class TestLotMultiFormat:
 
         assert code == 0
         assert list((tmp_path / "out").glob("*.md"))
+
+
+class TestConfigurationDesProfils:
+    """Les profils sont optionnels : leur absence ne doit pas bloquer la
+    commande, notamment une fois le paquet installé hors du dépôt."""
+
+    def test_sans_config_par_defaut_la_conversion_se_fait_quand_meme(
+        self, tmp_path: Path, docx_factory, monkeypatch
+    ) -> None:
+        monkeypatch.setattr(cli, "DEFAULT_CONFIG_PATHS", (tmp_path / "absent.yaml",))
+
+        code = cli.main([str(docx_factory()), "-o", str(tmp_path / "out")])
+
+        assert code == 0
+        assert list((tmp_path / "out").glob("*.md"))
+
+    def test_une_config_demandee_explicitement_et_absente_est_une_erreur(
+        self, tmp_path: Path, docx_factory, capsys
+    ) -> None:
+        with pytest.raises(SystemExit):
+            cli.main(
+                [str(docx_factory()), "-o", str(tmp_path / "out"),
+                 "--config", str(tmp_path / "absent.yaml")]
+            )
+
+        assert "config introuvable" in capsys.readouterr().err
 
 
 class TestCasLimites:
