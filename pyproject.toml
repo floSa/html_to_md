@@ -13,8 +13,14 @@ dependencies = [
 
 [project.optional-dependencies]
 # Dépendances de la version « app » (interface web). Le cœur de conversion
-# n'en a pas besoin ; installer avec `pip install .[app]`.
+# n'en a pas besoin ; installer avec `uv sync --extra app`.
 app = ["streamlit>=1.58"]
+# Formats bureautiques (Word, PowerPoint, Excel, PDF, EPUB, e-mails…).
+# Le HTML n'en a pas besoin ; installer avec `uv sync --extra docs`.
+docs = [
+    "mammoth>=1.11",
+    "markitdown[outlook,pdf,pptx,xls,xlsx]>=0.1.7",
+]
 
 [project.scripts]
 html2md = "html_to_md.cli:main"

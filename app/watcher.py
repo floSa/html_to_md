@@ -1,7 +1,7 @@
 """Surveillance du dossier ``HTML2MD/HTMLs`` : conversion des nouveaux fichiers.
 
 Au démarrage puis à intervalle régulier (1 h par défaut), on convertit chaque
-``.html`` qui n'a pas encore été traité (ou qui a changé depuis) vers
+document qui n'a pas encore été traité (ou qui a changé depuis) vers
 ``HTML2MD/MDs``. Un petit registre JSON (``.processed.json``) retient ce qui a
 déjà été fait, par signature mtime+taille, pour ne pas retravailler à vide.
 
@@ -18,6 +18,7 @@ from pathlib import Path
 from conversion import get_profiles  # type: ignore[import-not-found]
 
 from html_to_md.core import Result, process_file
+from html_to_md.sources import iter_sources
 
 DATA_ROOT = Path(os.environ.get("HTML2MD_ROOT", "HTML2MD"))
 HTMLS_DIR = DATA_ROOT / "HTMLs"
@@ -45,13 +46,13 @@ def _save_ledger(ledger: dict[str, str]) -> None:
 
 
 def pending_files() -> list[Path]:
-    """Fichiers HTML jamais convertis ou modifiés depuis leur dernière conversion."""
+    """Documents jamais convertis ou modifiés depuis leur dernière conversion."""
     ledger = _load_ledger()
     pending = []
-    for html in sorted(HTMLS_DIR.rglob("*.html")):
-        key = str(html.relative_to(HTMLS_DIR))
-        if ledger.get(key) != _signature(html):
-            pending.append(html)
+    for source in iter_sources(HTMLS_DIR):
+        key = str(source.relative_to(HTMLS_DIR))
+        if ledger.get(key) != _signature(source):
+            pending.append(source)
     return pending
 
 
@@ -66,11 +67,11 @@ def scan_once() -> list[Result]:
     taken: set[Path] = set(MDS_DIR.glob("*.md"))
     results: list[Result] = []
 
-    for html in pending_files():
-        key = str(html.relative_to(HTMLS_DIR))
+    for source in pending_files():
+        key = str(source.relative_to(HTMLS_DIR))
         try:
-            result = process_file(html, MDS_DIR, profiles, taken=taken)
-            ledger[key] = _signature(html)
+            result = process_file(source, MDS_DIR, profiles, taken=taken)
+            ledger[key] = _signature(source)
             results.append(result)
         except Exception as exc:  # un fichier corrompu ne doit pas tuer le service
             print(f"[watcher] erreur sur {key}: {exc}", flush=True)

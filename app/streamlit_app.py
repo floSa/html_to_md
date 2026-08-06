@@ -1,7 +1,7 @@
 """Interface web (Streamlit) de html_to_md.
 
 Trois usages :
-  1. déposer / glisser des fichiers HTML et télécharger le Markdown ;
+  1. déposer / glisser des documents et télécharger le Markdown ;
   2. convertir un dossier présent sur le serveur (téléchargement ZIP) ;
   3. piloter le dossier surveillé HTML2MD/HTMLs -> HTML2MD/MDs.
 
@@ -20,8 +20,11 @@ from conversion import (  # type: ignore[import-not-found]
     build_zip,
     convert_folder,
     convert_uploads,
+    supported_upload_types,
 )
 import watcher  # type: ignore[import-not-found]
+
+from html_to_md.sources import iter_sources
 
 st.set_page_config(page_title="html_to_md", layout="centered")
 
@@ -50,6 +53,17 @@ def _results_table(items: list[ConvertedFile]) -> None:
             f"{len(review)} fichier(s) à vérifier : le nettoyage a peut-être "
             "retiré trop de contenu."
         )
+    errors = [i for i in items if i.result.status == "error"]
+    if errors:
+        st.error(f"{len(errors)} fichier(s) en erreur (illisibles ou protégés).")
+
+
+def _report(items: list[ConvertedFile]) -> None:
+    """Récapitulatif complet : compte, tableau des résultats, téléchargement."""
+    done = [i for i in items if i.result.status != "error"]
+    st.success(f"{len(done)} document(s) converti(s) sur {len(items)}.")
+    _results_table(items)
+    _offer_download(done)
 
 
 def _offer_download(items: list[ConvertedFile]) -> None:
@@ -73,11 +87,14 @@ def _offer_download(items: list[ConvertedFile]) -> None:
 
 
 def tab_upload() -> None:
-    st.subheader("Déposer des fichiers HTML")
-    st.caption("Glissez-déposez une ou plusieurs captures SingleFile (.html).")
+    st.subheader("Déposer des documents")
+    st.caption(
+        "Glissez-déposez un ou plusieurs fichiers : pages web enregistrées, "
+        "Word, PowerPoint, Excel, PDF, EPUB, e-mails."
+    )
     uploads = st.file_uploader(
-        "Fichiers HTML",
-        type=["html", "htm"],
+        "Documents",
+        type=supported_upload_types(),
         accept_multiple_files=True,
         label_visibility="collapsed",
     )
@@ -92,25 +109,23 @@ def tab_upload() -> None:
         items = convert_uploads(((u.name, u.getvalue()) for u in uploads), on_progress)
         bar.empty()
         if not items:
-            st.error("Aucun fichier HTML valide dans la sélection.")
+            st.error("Aucun format pris en charge dans la sélection.")
             return
-        st.success(f"{len(items)} fichier(s) converti(s).")
-        _results_table(items)
-        _offer_download(items)
+        _report(items)
 
 
 def tab_folder() -> None:
     st.subheader("Convertir un dossier du serveur")
     st.caption("Chemin d'un dossier accessible par l'application (récursif).")
-    folder_str = st.text_input("Chemin du dossier", placeholder="/data/mes_captures")
+    folder_str = st.text_input("Chemin du dossier", placeholder="/data/mes_documents")
     if not folder_str:
         return
     folder = Path(folder_str)
     if not folder.is_dir():
         st.error("Dossier introuvable.")
         return
-    count = sum(1 for _ in folder.rglob("*.html"))
-    st.info(f"{count} fichier(s) .html détecté(s).")
+    count = len(iter_sources(folder))
+    st.info(f"{count} document(s) convertible(s) détecté(s).")
     if count and st.button("Convertir le dossier", type="primary"):
         bar = st.progress(0.0, text="Conversion…")
 
@@ -119,24 +134,22 @@ def tab_folder() -> None:
 
         items = convert_folder(folder, on_progress)
         bar.empty()
-        st.success(f"{len(items)} fichier(s) converti(s).")
-        _results_table(items)
-        _offer_download(items)
+        _report(items)
 
 
 def tab_watched() -> None:
     st.subheader("Dossier surveillé")
     st.caption(
-        f"Les `.html` déposés dans `{watcher.HTMLS_DIR}` sont convertis vers "
+        f"Les documents déposés dans `{watcher.HTMLS_DIR}` sont convertis vers "
         f"`{watcher.MDS_DIR}` automatiquement (toutes les "
         f"{watcher.INTERVAL_SECONDS // 60} min)."
     )
-    html_count = sum(1 for _ in watcher.HTMLS_DIR.rglob("*.html")) if watcher.HTMLS_DIR.exists() else 0
+    src_count = len(iter_sources(watcher.HTMLS_DIR)) if watcher.HTMLS_DIR.exists() else 0
     md_count = sum(1 for _ in watcher.MDS_DIR.glob("*.md")) if watcher.MDS_DIR.exists() else 0
     pending = watcher.pending_files() if watcher.HTMLS_DIR.exists() else []
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("HTML déposés", html_count)
+    col1.metric("Documents déposés", src_count)
     col2.metric("Markdown produits", md_count)
     col3.metric("En attente", len(pending))
 
@@ -151,10 +164,10 @@ def tab_watched() -> None:
 
 
 st.title("html_to_md")
-st.caption("Captures SingleFile → Markdown propre pour l'ingestion RAG.")
+st.caption("Documents → Markdown propre, prêt à relire et à indexer.")
 
 upload, folder, watched = st.tabs(
-    ["Déposer des fichiers", "Dossier serveur", "Dossier surveillé"]
+    ["Déposer des documents", "Dossier serveur", "Dossier surveillé"]
 )
 with upload:
     tab_upload()
