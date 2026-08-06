@@ -37,7 +37,9 @@ def export_data_uri_images(soup: BeautifulSoup, assets_dir: Path, min_bytes: int
             img.decompose()
             continue
 
-        if len(payload) < min_bytes:
+        # Un payload vide vient d'un data-URI tronqué ou corrompu : l'exporter
+        # produirait un fichier vide et un lien mort dans la note.
+        if not payload or len(payload) < min_bytes:
             # Icône d'interface : on la jette, alt compris (texte d'UI, pas de contenu).
             img.decompose()
             continue
