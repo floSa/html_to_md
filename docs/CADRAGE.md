@@ -125,7 +125,7 @@ et [`uv.lock`](../uv.lock) ; il n'est pas repris ici (voir la note du
 
 ## 7. Stratégie de tests
 
-**74 tests** couvrent les deux pipelines, la ligne de commande et l'interface — du
+**76 tests** couvrent les deux pipelines, la ligne de commande et l'interface — du
 routage des formats aux collisions de noms, en passant par les documents illisibles.
 Le détail par fichier est en [ARCHITECTURE §10](ARCHITECTURE.md#10-tests).
 
