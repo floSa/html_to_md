@@ -9,6 +9,7 @@ from pathlib import Path
 from .convert import MIN_IMAGE_BYTES
 from .core import Result, process_file
 from .extract import load_profiles
+from .sources import SUPPORTED_EXTENSIONS, iter_sources
 
 DEFAULT_CONFIG = Path(__file__).resolve().parents[2] / "config" / "selectors.yaml"
 
@@ -16,7 +17,7 @@ DEFAULT_CONFIG = Path(__file__).resolve().parents[2] / "config" / "selectors.yam
 def _iter_sources(input_path: Path) -> list[Path]:
     if input_path.is_file():
         return [input_path]
-    return sorted(p for p in input_path.rglob("*.html") if p.is_file())
+    return iter_sources(input_path)
 
 
 def _output_dir(source: Path, input_path: Path, output_dir: Path) -> Path:
@@ -27,11 +28,15 @@ def _output_dir(source: Path, input_path: Path, output_dir: Path) -> Path:
 
 
 def main(argv: list[str] | None = None) -> int:
+    formats = ", ".join(sorted(SUPPORTED_EXTENSIONS))
     parser = argparse.ArgumentParser(
         prog="html2md",
-        description="Nettoie des captures SingleFile et les convertit en Markdown.",
+        description=(
+            "Convertit des documents en Markdown propre "
+            f"(formats pris en charge : {formats})."
+        ),
     )
-    parser.add_argument("input", type=Path, help="fichier .html ou dossier à traiter (récursif)")
+    parser.add_argument("input", type=Path, help="fichier ou dossier à traiter (récursif)")
     parser.add_argument(
         "-o", "--output", type=Path, default=Path("out"),
         help="dossier de sortie (défaut : ./out)",
@@ -42,7 +47,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--min-image-bytes", type=int, default=MIN_IMAGE_BYTES,
-        help="taille minimale (octets) pour exporter une image data-URI au lieu de la supprimer",
+        help=(
+            "taille minimale (octets) pour exporter une image au lieu de la "
+            "supprimer ; ne s'applique qu'aux pages web, dont il écarte les "
+            "icônes d'interface"
+        ),
     )
     args = parser.parse_args(argv)
 
@@ -54,7 +63,7 @@ def main(argv: list[str] | None = None) -> int:
     profiles = load_profiles(args.config)
     sources = _iter_sources(args.input)
     if not sources:
-        print("Aucun fichier .html trouvé.", file=sys.stderr)
+        print(f"Aucun fichier convertible trouvé ({formats}).", file=sys.stderr)
         return 1
 
     results: list[Result] = []
