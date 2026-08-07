@@ -41,12 +41,12 @@ une seule fois.
 | Module | Rôle |
 |---|---|
 | [`cli.py`](../src/fast_to_md/cli.py) | Point d'entrée CLI `fast2md` : parcours des sources, appel du cœur, rapport ligne à ligne, code de sortie |
-| [`sources.py`](../src/fast_to_md/sources.py) | Routage par extension : décide du chemin de conversion et prépare les documents non-HTML |
+| [`sources.py`](../src/fast_to_md/sources.py) | Routage par extension : `.docx` via **mammoth** (HTML intermédiaire), le reste via **MarkItDown** (Markdown direct) |
 | [`core.py`](../src/fast_to_md/core.py) | Orchestration d'un fichier : aiguillage, pipeline, écriture ; produit un `Result` |
 | [`hygiene.py`](../src/fast_to_md/hygiene.py) | Passe d'hygiène conservatrice : retire scripts, styles, chrome de navigation, éléments cachés |
-| [`extract.py`](../src/fast_to_md/extract.py) | Isolation du contenu utile d'une page web : profils par site → conteneurs sémantiques → heuristique générique → `<body>` |
+| [`extract.py`](../src/fast_to_md/extract.py) | Isolation du contenu utile d'une page web : profils par site → conteneurs sémantiques → **readability-lxml** → `<body>` |
 | [`maths.py`](../src/fast_to_md/maths.py) | Récupération de la source LaTeX des formules rendues (KaTeX, MathJax v2/v3, MathML) |
-| [`convert.py`](../src/fast_to_md/convert.py) | Production du Markdown, export des images embarquées, normalisation des tableaux et des titres |
+| [`convert.py`](../src/fast_to_md/convert.py) | Conversion HTML → Markdown (**markdownify**), export des images embarquées, normalisation des tableaux et des titres |
 | [`naming.py`](../src/fast_to_md/naming.py) | Nommage des fichiers de sortie et gestion des collisions |
 
 ### 2.2 Couche application — `app/` (branche `app`)

@@ -171,12 +171,19 @@ docker-compose.yml
 |---|---|---|
 | Python | Langage / runtime (`python:3.12-slim`) | PSF |
 | uv | Gestion des dépendances (`uv.lock` versionné) | MIT |
+| beautifulsoup4 | Parsing HTML | MIT |
+| lxml | Parseur / nettoyage HTML | BSD-3-Clause |
+| readability-lxml | Extraction générique du contenu (pages web) | Apache-2.0 |
+| markdownify | Conversion HTML → Markdown | MIT |
+| mammoth | Conversion Word (.docx) → HTML | MIT |
+| MarkItDown | Conversion PowerPoint, Excel, PDF, EPUB, e-mails, CSV, carnets de notes → Markdown | MIT |
+| PyYAML | Lecture des profils d'extraction | MIT |
 | Streamlit | Interface web (extra `app`) | Apache-2.0 |
 | Docker Compose | Orchestration des deux services | Apache-2.0 |
 | pytest | Suite de tests | MIT |
 | **Ce projet** | Code applicatif | MIT — Copyright (c) 2026 floSa — `<à confirmer>` : aucun fichier `LICENSE` ni champ `license` dans `pyproject.toml` |
 
-> Les briques de conversion ne sont pas détaillées ici. La liste complète et versionnée des dépendances se lit dans [`pyproject.toml`](pyproject.toml) et [`uv.lock`](uv.lock), qui font foi pour toute vérification de licence.
+> Liste versionnée complète (avec transitives) dans [`pyproject.toml`](pyproject.toml) et [`uv.lock`](uv.lock).
 
 > **Attention** : licences indiquées d'après l'usage courant de ces briques ; elles **changent parfois selon les versions**. À vérifier avant tout usage engageant.
 

@@ -82,13 +82,19 @@ Hypothèses **non lisibles dans le code** — à confirmer par l'auteur :
 |---|---|---|
 | Langage / runtime | Python `>=3.10` (image `python:3.12-slim`) | PSF |
 | Gestion des dépendances | uv (`uv.lock` versionné) | MIT |
+| Parsing HTML | beautifulsoup4 `>=4.15` | MIT |
+| Parseur / nettoyage | lxml `>=6.1` | BSD-3-Clause |
+| Extraction générique (pages web) | readability-lxml `>=0.8.4` | Apache-2.0 |
+| HTML → Markdown | markdownify `>=1.2` | MIT |
+| Word (.docx) → HTML | mammoth `>=1.11` (extra `docs`) | MIT |
+| Autres documents → Markdown | MarkItDown `>=0.1.7` (extra `docs`) | MIT |
+| Profils de config | PyYAML `>=6.0.3` | MIT |
 | Interface web (extra `app`) | Streamlit `>=1.58` | Apache-2.0 |
 | Conteneurisation | Docker Compose | Apache-2.0 |
 | Tests | pytest `>=8.4` | MIT |
 
-Le détail des briques de conversion se lit dans [`pyproject.toml`](../pyproject.toml)
-et [`uv.lock`](../uv.lock) ; il n'est pas repris ici (voir la note du
-[README](../README.md#licences--composants)).
+Détail complet (avec transitives) dans [`pyproject.toml`](../pyproject.toml) et
+[`uv.lock`](../uv.lock).
 
 > Licences : valeurs usuelles pour ces briques, **à vérifier** avant tout usage
 > engageant.
