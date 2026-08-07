@@ -1,9 +1,9 @@
-"""Interface web (Streamlit) de html_to_md.
+"""Interface web (Streamlit) de fast_to_md.
 
 Trois usages :
   1. déposer / glisser des documents et télécharger le Markdown ;
   2. convertir un dossier présent sur le serveur (téléchargement ZIP) ;
-  3. piloter le dossier surveillé HTML2MD/HTMLs -> HTML2MD/MDs.
+  3. piloter le dossier surveillé FAST2MD/Inbox -> FAST2MD/Markdown.
 
 Lancé via ``streamlit run app/streamlit_app.py`` : le dossier ``app/`` est sur
 le ``sys.path``, d'où les imports nus ``conversion`` / ``watcher``.
@@ -24,9 +24,9 @@ from conversion import (  # type: ignore[import-not-found]
 )
 import watcher  # type: ignore[import-not-found]
 
-from html_to_md.sources import iter_sources
+from fast_to_md.sources import iter_sources
 
-st.set_page_config(page_title="html_to_md", layout="centered")
+st.set_page_config(page_title="fast_to_md", layout="centered")
 
 _STATUS_ICON = {"ok": "✅", "review": "!", "error": "❌"}
 
@@ -81,7 +81,7 @@ def _offer_download(items: list[ConvertedFile]) -> None:
         st.download_button(
             "⬇️ Télécharger le ZIP (Markdown + images)",
             data=build_zip(items),
-            file_name="html_to_md.zip",
+            file_name="fast_to_md.zip",
             mime="application/zip",
         )
 
@@ -140,13 +140,13 @@ def tab_folder() -> None:
 def tab_watched() -> None:
     st.subheader("Dossier surveillé")
     st.caption(
-        f"Les documents déposés dans `{watcher.HTMLS_DIR}` sont convertis vers "
-        f"`{watcher.MDS_DIR}` automatiquement (toutes les "
+        f"Les documents déposés dans `{watcher.INBOX_DIR}` sont convertis vers "
+        f"`{watcher.MARKDOWN_DIR}` automatiquement (toutes les "
         f"{watcher.INTERVAL_SECONDS // 60} min)."
     )
-    src_count = len(iter_sources(watcher.HTMLS_DIR)) if watcher.HTMLS_DIR.exists() else 0
-    md_count = sum(1 for _ in watcher.MDS_DIR.glob("*.md")) if watcher.MDS_DIR.exists() else 0
-    pending = watcher.pending_files() if watcher.HTMLS_DIR.exists() else []
+    src_count = len(iter_sources(watcher.INBOX_DIR)) if watcher.INBOX_DIR.exists() else 0
+    md_count = sum(1 for _ in watcher.MARKDOWN_DIR.glob("*.md")) if watcher.MARKDOWN_DIR.exists() else 0
+    pending = watcher.pending_files() if watcher.INBOX_DIR.exists() else []
 
     col1, col2, col3 = st.columns(3)
     col1.metric("Documents déposés", src_count)
@@ -155,7 +155,7 @@ def tab_watched() -> None:
 
     if pending:
         with st.expander(f"{len(pending)} fichier(s) en attente"):
-            st.write([str(p.relative_to(watcher.HTMLS_DIR)) for p in pending])
+            st.write([str(p.relative_to(watcher.INBOX_DIR)) for p in pending])
 
     if st.button("Convertir maintenant", type="primary", disabled=not pending):
         with st.spinner("Conversion…"):
@@ -163,7 +163,7 @@ def tab_watched() -> None:
         st.success(f"{len(results)} fichier(s) converti(s).")
 
 
-st.title("html_to_md")
+st.title("fast_to_md")
 st.caption("Documents → Markdown propre, prêt à relire et à indexer.")
 
 upload, folder, watched = st.tabs(

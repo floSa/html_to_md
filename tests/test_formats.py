@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from html_to_md.sources import TEXT_EXTENSIONS, ingest
+from fast_to_md.sources import TEXT_EXTENSIONS, ingest
 
 
 def _csv(path: Path) -> Path:

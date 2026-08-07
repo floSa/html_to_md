@@ -1,4 +1,4 @@
-"""Interface en ligne de commande : html2md INPUT [-o OUTPUT]."""
+"""Interface en ligne de commande : fast2md INPUT [-o OUTPUT]."""
 
 from __future__ import annotations
 
@@ -44,7 +44,7 @@ def _output_dir(source: Path, input_path: Path, output_dir: Path) -> Path:
 def main(argv: list[str] | None = None) -> int:
     formats = ", ".join(sorted(SUPPORTED_EXTENSIONS))
     parser = argparse.ArgumentParser(
-        prog="html2md",
+        prog="fast2md",
         description=(
             "Convertit des documents en Markdown propre "
             f"(formats pris en charge : {formats})."

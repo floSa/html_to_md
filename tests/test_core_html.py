@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from html_to_md.core import process_file
+from fast_to_md.core import process_file
 
 from conftest import FIXTURES
 

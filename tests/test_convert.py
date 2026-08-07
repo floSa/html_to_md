@@ -7,7 +7,7 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup
 
-from html_to_md.convert import (
+from fast_to_md.convert import (
     export_data_uri_images,
     promote_table_headers,
     tidy_headings,

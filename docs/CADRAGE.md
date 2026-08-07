@@ -1,4 +1,4 @@
-# Cadrage — html_to_md
+# Cadrage — fast_to_md
 
 > Le **POURQUOI**. Le COMMENT (composants, pipeline, décisions techniques) est dans
 > [ARCHITECTURE.md](ARCHITECTURE.md).
@@ -17,7 +17,7 @@ et exploitable pour l'ingestion RAG. Trois capacités :
 3. **Signaler** les conversions douteuses (contenu peut-être sur-nettoyé) au lieu de
    les livrer silencieusement.
 
-Trois modes d'accès au même cœur : **CLI** (`html2md`), **interface web** (Streamlit),
+Trois modes d'accès au même cœur : **CLI** (`fast2md`), **interface web** (Streamlit),
 et **dossier surveillé** (watcher automatique).
 
 ---
@@ -98,7 +98,7 @@ et [`uv.lock`](../uv.lock) ; il n'est pas repris ici (voir la note du
 ## 6. Décisions produit
 
 **Décisions figées** (lisibles dans le code)
-- **Un seul cœur, trois surfaces** : CLI, UI web, watcher partagent `html_to_md.core`.
+- **Un seul cœur, trois surfaces** : CLI, UI web, watcher partagent `fast_to_md.core`.
 - **Deux niveaux de restitution assumés** : les formats qui savent rendre images et
   tableaux les rendent ; les autres sortent en texte, sans promesse d'images ni lien
   mort laissé dans la note.
@@ -111,11 +111,15 @@ et [`uv.lock`](../uv.lock) ; il n'est pas repris ici (voir la note du
 - **Dépendances lourdes en extras** : le cœur et la CLI s'installent sans l'UI ni les
   formats bureautiques.
 
+**Décision récente**
+- **Renommage `html_to_md` → `fast_to_md`** (module, CLI `fast2md`, dossier surveillé
+  `FAST2MD/Inbox` → `FAST2MD/Markdown`) : l'ancien nom n'avait plus de sens une fois
+  les formats bureautiques ajoutés. Le renommage du dépôt GitHub lui-même reste à
+  faire par l'auteur.
+
 **À trancher**
 - **Fichier `LICENSE` du dépôt** : absent, et aucun champ `license` dans
   `pyproject.toml`. La licence effective est `<à confirmer>` (voir README).
-- **Nom du projet et du dossier surveillé** : `html_to_md` et `HTML2MD/HTMLs` sont
-  devenus trompeurs maintenant que tous les formats sont acceptés.
 - **Restriction de l'onglet « dossier serveur »** : convertit tout chemin lisible par
   l'app — à cadrer en cas d'exposition partagée.
 - **Élargissement aux mises en page complexes** : une chaîne à analyse de mise en page

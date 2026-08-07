@@ -11,8 +11,8 @@ RUN pip install --no-cache-dir ".[app,docs]"
 COPY app ./app
 
 # Dossier de travail surveillé (monté en volume en pratique).
-ENV HTML2MD_ROOT=/app/HTML2MD
-RUN mkdir -p /app/HTML2MD/HTMLs /app/HTML2MD/MDs
+ENV FAST2MD_ROOT=/app/FAST2MD
+RUN mkdir -p /app/FAST2MD/Inbox /app/FAST2MD/Markdown
 
 EXPOSE 8501
 

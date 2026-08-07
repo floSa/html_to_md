@@ -1,6 +1,6 @@
-"""Adaptateurs entre le cœur ``html_to_md`` (disque) et l'app web (mémoire).
+"""Adaptateurs entre le cœur ``fast_to_md`` (disque) et l'app web (mémoire).
 
-Le cœur (`html_to_md.core.process_file`) lit un fichier et écrit le Markdown +
+Le cœur (`fast_to_md.core.process_file`) lit un fichier et écrit le Markdown +
 les images sur disque. L'app web reçoit des octets et doit proposer un
 téléchargement : on passe donc par un dossier temporaire puis on relit le
 résultat en mémoire.
@@ -18,9 +18,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, Iterable
 
-from html_to_md.core import Result, process_file
-from html_to_md.extract import Profile, load_profiles
-from html_to_md.sources import SUPPORTED_EXTENSIONS, is_supported, iter_sources
+from fast_to_md.core import Result, process_file
+from fast_to_md.extract import Profile, load_profiles
+from fast_to_md.sources import SUPPORTED_EXTENSIONS, is_supported, iter_sources
 
 # config/selectors.yaml est à la racine du dépôt, app/ juste à côté.
 DEFAULT_CONFIG = Path(__file__).resolve().parents[1] / "config" / "selectors.yaml"

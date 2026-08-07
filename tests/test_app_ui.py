@@ -15,7 +15,7 @@ pytest.importorskip("streamlit")
 
 from streamlit.testing.v1 import AppTest  # noqa: E402
 
-from html_to_md.sources import SUPPORTED_EXTENSIONS  # noqa: E402
+from fast_to_md.sources import SUPPORTED_EXTENSIONS  # noqa: E402
 
 APP_DIR = Path(__file__).resolve().parents[1] / "app"
 APP_FILE = APP_DIR / "streamlit_app.py"
@@ -34,7 +34,7 @@ def app() -> AppTest:
 class TestRendu:
     def test_la_page_se_charge_sans_exception(self, app: AppTest) -> None:
         assert not app.exception
-        assert app.title[0].value == "html_to_md"
+        assert app.title[0].value == "fast_to_md"
 
     def test_les_trois_usages_sont_presents(self, app: AppTest) -> None:
         titles = [s.value for s in app.subheader]

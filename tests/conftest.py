@@ -14,7 +14,7 @@ from pathlib import Path
 
 import pytest
 
-from html_to_md.extract import Profile, load_profiles
+from fast_to_md.extract import Profile, load_profiles
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = Path(__file__).parent / "fixtures"

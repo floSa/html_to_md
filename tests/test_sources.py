@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from html_to_md import sources
+from fast_to_md import sources
 
 
 class TestClassification:

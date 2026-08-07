@@ -6,8 +6,8 @@ from pathlib import Path
 
 import pytest
 
-from html_to_md.core import process_file
-from html_to_md.sources import UnsupportedFormat
+from fast_to_md.core import process_file
+from fast_to_md.sources import UnsupportedFormat
 
 
 class TestWord:

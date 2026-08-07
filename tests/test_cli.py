@@ -7,8 +7,8 @@ from pathlib import Path
 
 import pytest
 
-from html_to_md import cli
-from html_to_md.cli import main
+from fast_to_md import cli
+from fast_to_md.cli import main
 
 from conftest import FIXTURES
 

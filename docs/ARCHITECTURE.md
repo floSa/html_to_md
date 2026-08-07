@@ -1,11 +1,11 @@
-# Architecture — html_to_md
+# Architecture — fast_to_md
 
 > Le **COMMENT**. Le POURQUOI (objectifs, hypothèses, décisions produit) est dans
 > [CADRAGE.md](CADRAGE.md).
 
 ## 1. Vue d'ensemble
 
-`html_to_md` transforme des documents en **Markdown propre**, relisible dans un
+`fast_to_md` transforme des documents en **Markdown propre**, relisible dans un
 éditeur de notes et exploitable pour l'ingestion RAG. Il accepte deux familles
 d'entrées, traitées différemment :
 
@@ -17,8 +17,8 @@ d'entrées, traitées différemment :
 
 Le projet se décompose en deux couches nettement séparées :
 
-- un **cœur de conversion** pur (`src/html_to_md/`, src-layout), sans dépendance à
-  une interface, exposé par une **CLI** (`html2md`) ;
+- un **cœur de conversion** pur (`src/fast_to_md/`, src-layout), sans dépendance à
+  une interface, exposé par une **CLI** (`fast2md`) ;
 - une **couche application** (`app/`, présente sur la branche `app`) qui enveloppe ce
   cœur dans une interface web **Streamlit** et un service de surveillance de dossier,
   le tout orchestré par **Docker Compose**.
@@ -36,18 +36,18 @@ une seule fois.
 
 ## 2. Composants
 
-### 2.1 Cœur de conversion — `src/html_to_md/`
+### 2.1 Cœur de conversion — `src/fast_to_md/`
 
 | Module | Rôle |
 |---|---|
-| [`cli.py`](../src/html_to_md/cli.py) | Point d'entrée CLI `html2md` : parcours des sources, appel du cœur, rapport ligne à ligne, code de sortie |
-| [`sources.py`](../src/html_to_md/sources.py) | Routage par extension : décide du chemin de conversion et prépare les documents non-HTML |
-| [`core.py`](../src/html_to_md/core.py) | Orchestration d'un fichier : aiguillage, pipeline, écriture ; produit un `Result` |
-| [`hygiene.py`](../src/html_to_md/hygiene.py) | Passe d'hygiène conservatrice : retire scripts, styles, chrome de navigation, éléments cachés |
-| [`extract.py`](../src/html_to_md/extract.py) | Isolation du contenu utile d'une page web : profils par site → conteneurs sémantiques → heuristique générique → `<body>` |
-| [`maths.py`](../src/html_to_md/maths.py) | Récupération de la source LaTeX des formules rendues (KaTeX, MathJax v2/v3, MathML) |
-| [`convert.py`](../src/html_to_md/convert.py) | Production du Markdown, export des images embarquées, normalisation des tableaux et des titres |
-| [`naming.py`](../src/html_to_md/naming.py) | Nommage des fichiers de sortie et gestion des collisions |
+| [`cli.py`](../src/fast_to_md/cli.py) | Point d'entrée CLI `fast2md` : parcours des sources, appel du cœur, rapport ligne à ligne, code de sortie |
+| [`sources.py`](../src/fast_to_md/sources.py) | Routage par extension : décide du chemin de conversion et prépare les documents non-HTML |
+| [`core.py`](../src/fast_to_md/core.py) | Orchestration d'un fichier : aiguillage, pipeline, écriture ; produit un `Result` |
+| [`hygiene.py`](../src/fast_to_md/hygiene.py) | Passe d'hygiène conservatrice : retire scripts, styles, chrome de navigation, éléments cachés |
+| [`extract.py`](../src/fast_to_md/extract.py) | Isolation du contenu utile d'une page web : profils par site → conteneurs sémantiques → heuristique générique → `<body>` |
+| [`maths.py`](../src/fast_to_md/maths.py) | Récupération de la source LaTeX des formules rendues (KaTeX, MathJax v2/v3, MathML) |
+| [`convert.py`](../src/fast_to_md/convert.py) | Production du Markdown, export des images embarquées, normalisation des tableaux et des titres |
+| [`naming.py`](../src/fast_to_md/naming.py) | Nommage des fichiers de sortie et gestion des collisions |
 
 ### 2.2 Couche application — `app/` (branche `app`)
 
@@ -61,8 +61,8 @@ une seule fois.
 
 | Service | Image / Build | Port interne | Port hôte | Rôle |
 |---|---|---|---|---|
-| `webapp` | build `.` → `html_to_md` | `8501` | `8505` | Interface Streamlit |
-| `watcher` | build `.` → `html_to_md` (commande `python app/watcher.py`) | — | — | Conversion automatique du dossier surveillé |
+| `webapp` | build `.` → `fast_to_md` | `8501` | `8505` | Interface Streamlit |
+| `watcher` | build `.` → `fast_to_md` (commande `python app/watcher.py`) | — | — | Conversion automatique du dossier surveillé |
 
 Source : [`docker-compose.yml`](../docker-compose.yml), [`Dockerfile`](../Dockerfile).
 
@@ -71,7 +71,7 @@ Source : [`docker-compose.yml`](../docker-compose.yml), [`Dockerfile`](../Docker
 ## 3. Formats pris en charge
 
 Le format d'entrée est déterminé par l'**extension** du fichier
-([`sources.py`](../src/html_to_md/sources.py)), qui décide du chemin suivi. Trois
+([`sources.py`](../src/fast_to_md/sources.py)), qui décide du chemin suivi. Trois
 familles, trois niveaux de restitution :
 
 | Famille | Extensions | Images | Tableaux | Chemin |
@@ -93,7 +93,7 @@ retirés du Markdown final plutôt que livrés cassés.
 
 ## 4. Flux de bout en bout
 
-`process_file` ([core.py](../src/html_to_md/core.py)) aiguille d'abord selon la
+`process_file` ([core.py](../src/fast_to_md/core.py)) aiguille d'abord selon la
 famille du fichier, puis déroule le pipeline correspondant.
 
 ```mermaid
@@ -136,14 +136,14 @@ flowchart TD
 2. **Extraction des formules** *avant* l'hygiène — car la passe d'hygiène supprime les
    `<script>` et `<svg>` où la source LaTeX est stockée. Chaque formule est remplacée
    par un jeton `ZZMATHTOKEN<n>ZZ` qui traverse la conversion sans être échappé.
-3. **Hygiène** ([hygiene.py](../src/html_to_md/hygiene.py)) : suppression du bruit non
+3. **Hygiène** ([hygiene.py](../src/fast_to_md/hygiene.py)) : suppression du bruit non
    ambigu (scripts, styles, `nav`/`aside`, `header`/`footer` hors article, éléments
    cachés, widgets « articles liés », commentaires).
-4. **Extraction du contenu utile** ([extract.py](../src/html_to_md/extract.py)) selon
+4. **Extraction du contenu utile** ([extract.py](../src/fast_to_md/extract.py)) selon
    une cascade de stratégies (voir §5).
 5. **Nettoyage post-extraction** : suppression des sélecteurs `strip` du profil,
    retrait des ancres `#`/`¶` dans les titres, promotion des en-têtes de tableaux.
-6. **Nommage** ([naming.py](../src/html_to_md/naming.py)) : `<site>_<Titre_Article>.md`,
+6. **Nommage** ([naming.py](../src/fast_to_md/naming.py)) : `<site>_<Titre_Article>.md`,
    avec gestion des collisions via l'ensemble partagé `taken`.
 7. **Export des images** embarquées ≥ `min_image_bytes` vers `<nom>_assets/` ; les
    images plus petites (icônes d'interface) sont supprimées.
@@ -161,7 +161,7 @@ Plus court, et volontairement : un document bureautique ne contient **pas de chr
 de page**. L'hygiène et l'extraction du contenu principal y sont sautées — elles ne
 feraient que risquer de supprimer du contenu légitime.
 
-1. **Préparation** du contenu ([sources.py](../src/html_to_md/sources.py)) : les
+1. **Préparation** du contenu ([sources.py](../src/fast_to_md/sources.py)) : les
    documents riches passent par un HTML intermédiaire qui conserve images et
    tableaux ; les autres produisent directement du Markdown.
 2. **Nommage** d'après le nom du fichier source.
@@ -241,25 +241,22 @@ elle ne s'applique pas au pipeline document.
 
 | Chemin (dans le conteneur) | Monté depuis | Contenu |
 |---|---|---|
-| `/app/HTML2MD` | `./HTML2MD` (volume Compose) | Dossiers d'échange du watcher |
-| `HTML2MD/HTMLs/` | — | Documents à convertir (déposés par l'utilisateur) |
-| `HTML2MD/MDs/` | — | Markdown produit |
-| `HTML2MD/.processed.json` | — | Registre du watcher : `chemin → mtime_ns:taille` |
+| `/app/FAST2MD` | `./FAST2MD` (volume Compose) | Dossiers d'échange du watcher |
+| `FAST2MD/Inbox/` | — | Documents à convertir (déposés par l'utilisateur) |
+| `FAST2MD/Markdown/` | — | Markdown produit |
+| `FAST2MD/.processed.json` | — | Registre du watcher : `chemin → mtime_ns:taille` |
 
-Le watcher ([watcher.py](../app/watcher.py)) scrute `HTMLs/` au démarrage puis toutes
+Le watcher ([watcher.py](../app/watcher.py)) scrute `Inbox/` au démarrage puis toutes
 les `WATCH_INTERVAL_SECONDS` (défaut **3600 s**). Un fichier n'est reconverti que si sa
 signature `mtime_ns:taille` diffère de celle du registre — pas de retraitement à vide.
-Les noms déjà présents dans `MDs/` sont réservés pour ne pas écraser une conversion
-passée.
-
-> Le nom du dossier `HTMLs/` est **historique** : il accepte désormais tous les formats
-> pris en charge, pas seulement le HTML.
+Les noms déjà présents dans `Markdown/` sont réservés pour ne pas écraser une
+conversion passée.
 
 ---
 
 ## 9. Décisions d'architecture
 
-- **Séparation cœur / interface** : le cœur (`src/html_to_md/`) ne connaît que le
+- **Séparation cœur / interface** : le cœur (`src/fast_to_md/`) ne connaît que le
   disque et n'importe aucune brique d'UI, **plutôt que** de mêler conversion et
   Streamlit, **parce que** la même logique doit servir la CLI, l'UI et le watcher sans
   duplication. *Limite* : la couche app doit faire transiter les octets par un dossier

@@ -1,9 +1,10 @@
-"""Surveillance du dossier ``HTML2MD/HTMLs`` : conversion des nouveaux fichiers.
+"""Surveillance du dossier ``FAST2MD/Inbox`` : conversion des nouveaux fichiers.
 
 Au démarrage puis à intervalle régulier (1 h par défaut), on convertit chaque
 document qui n'a pas encore été traité (ou qui a changé depuis) vers
-``HTML2MD/MDs``. Un petit registre JSON (``.processed.json``) retient ce qui a
-déjà été fait, par signature mtime+taille, pour ne pas retravailler à vide.
+``FAST2MD/Markdown``. Un petit registre JSON (``.processed.json``) retient ce
+qui a déjà été fait, par signature mtime+taille, pour ne pas retravailler à
+vide.
 
 Lancé comme service à part (voir docker-compose), indépendamment de l'UI.
 """
@@ -17,12 +18,12 @@ from pathlib import Path
 
 from conversion import get_profiles  # type: ignore[import-not-found]
 
-from html_to_md.core import Result, process_file
-from html_to_md.sources import iter_sources
+from fast_to_md.core import Result, process_file
+from fast_to_md.sources import iter_sources
 
-DATA_ROOT = Path(os.environ.get("HTML2MD_ROOT", "HTML2MD"))
-HTMLS_DIR = DATA_ROOT / "HTMLs"
-MDS_DIR = DATA_ROOT / "MDs"
+DATA_ROOT = Path(os.environ.get("FAST2MD_ROOT", "FAST2MD"))
+INBOX_DIR = DATA_ROOT / "Inbox"
+MARKDOWN_DIR = DATA_ROOT / "Markdown"
 LEDGER_PATH = DATA_ROOT / ".processed.json"
 INTERVAL_SECONDS = int(os.environ.get("WATCH_INTERVAL_SECONDS", str(60 * 60)))
 
@@ -49,8 +50,8 @@ def pending_files() -> list[Path]:
     """Documents jamais convertis ou modifiés depuis leur dernière conversion."""
     ledger = _load_ledger()
     pending = []
-    for source in iter_sources(HTMLS_DIR):
-        key = str(source.relative_to(HTMLS_DIR))
+    for source in iter_sources(INBOX_DIR):
+        key = str(source.relative_to(INBOX_DIR))
         if ledger.get(key) != _signature(source):
             pending.append(source)
     return pending
@@ -58,19 +59,19 @@ def pending_files() -> list[Path]:
 
 def scan_once() -> list[Result]:
     """Convertit tous les fichiers en attente. Renvoie les résultats produits."""
-    HTMLS_DIR.mkdir(parents=True, exist_ok=True)
-    MDS_DIR.mkdir(parents=True, exist_ok=True)
+    INBOX_DIR.mkdir(parents=True, exist_ok=True)
+    MARKDOWN_DIR.mkdir(parents=True, exist_ok=True)
 
     profiles = get_profiles()
     ledger = _load_ledger()
     # Réserve les noms déjà présents pour ne pas écraser une conversion passée.
-    taken: set[Path] = set(MDS_DIR.glob("*.md"))
+    taken: set[Path] = set(MARKDOWN_DIR.glob("*.md"))
     results: list[Result] = []
 
     for source in pending_files():
-        key = str(source.relative_to(HTMLS_DIR))
+        key = str(source.relative_to(INBOX_DIR))
         try:
-            result = process_file(source, MDS_DIR, profiles, taken=taken)
+            result = process_file(source, MARKDOWN_DIR, profiles, taken=taken)
             ledger[key] = _signature(source)
             results.append(result)
         except Exception as exc:  # un fichier corrompu ne doit pas tuer le service
@@ -83,7 +84,7 @@ def scan_once() -> list[Result]:
 
 def main() -> None:
     print(
-        f"[watcher] surveillance de {HTMLS_DIR} -> {MDS_DIR} "
+        f"[watcher] surveillance de {INBOX_DIR} -> {MARKDOWN_DIR} "
         f"toutes les {INTERVAL_SECONDS} s",
         flush=True,
     )

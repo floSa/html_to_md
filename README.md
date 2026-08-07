@@ -1,4 +1,4 @@
-# html_to_md — version app (interface web)
+# fast_to_md — version app (interface web)
 
 > Branche **`app`**. Pour la version ligne de commande, voir la branche [`cli`](../../tree/cli). Présentation générale sur [`main`](../../tree/main).
 
@@ -23,7 +23,7 @@ Sur la dernière famille, les images embarquées ne sont pas récupérables — 
 
 ## Architecture
 
-- Un **cœur de conversion** (`src/html_to_md/`) sans dépendance à une interface, exposé par la CLI `html2md`.
+- Un **cœur de conversion** (`src/fast_to_md/`) sans dépendance à une interface, exposé par la CLI `fast2md`.
 - Une **couche application** (`app/`) : interface web Streamlit + service de surveillance de dossier.
 - Deux **pipelines** : les pages web passent par un nettoyage complet (elles sont pleines de chrome à retirer), les documents par un chemin plus court qui rejoint la même fin de traitement.
 
@@ -33,14 +33,14 @@ flowchart LR
     web[Pages web]
     doc[Documents]
   end
-  subgraph Coeur["Cœur html_to_md"]
+  subgraph Coeur["Cœur fast_to_md"]
     route{Routage<br/>par extension}
     pweb[Pipeline page web<br/>hygiène + extraction]
     pdoc[Pipeline document]
     fin[Titres, tableaux,<br/>images, Markdown]
   end
   subgraph Surfaces["Surfaces d'usage"]
-    cli[CLI html2md]
+    cli[CLI fast2md]
     ui[Interface web]
     watch[Dossier surveillé]
   end
@@ -60,9 +60,7 @@ Détail complet : [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 - **Déposer des documents** : glisser-déposer un ou plusieurs fichiers, conversion, puis téléchargement du `.md` (ou d'un `.zip` Markdown + images si plusieurs fichiers). Un document illisible ressort en erreur sans faire échouer les autres.
 - **Dossier serveur** : convertir tout un dossier accessible par l'app, **récursivement**, avec barre d'avancement et téléchargement en `.zip`.
-- **Dossier surveillé** : tout document déposé dans `HTML2MD/HTMLs` est converti automatiquement vers `HTML2MD/MDs`. Le service `watcher` scrute le dossier **au démarrage puis toutes les heures** et ne retraite que les fichiers nouveaux ou modifiés (registre `HTML2MD/.processed.json`). L'onglet permet aussi de lancer une conversion immédiate.
-
-> Le nom du dossier `HTMLs/` est historique : il accepte désormais tous les formats.
+- **Dossier surveillé** : tout document déposé dans `FAST2MD/Inbox` est converti automatiquement vers `FAST2MD/Markdown`. Le service `watcher` scrute le dossier **au démarrage puis toutes les heures** et ne retraite que les fichiers nouveaux ou modifiés (registre `FAST2MD/.processed.json`). L'onglet permet aussi de lancer une conversion immédiate.
 
 ## Démarrage avec Docker (recommandé)
 
@@ -76,10 +74,10 @@ Deux services sont lancés :
 
 | Service | Image / Build | Port interne | Port hôte | Rôle |
 |---|---|---|---|---|
-| `webapp` | build `.` → `html_to_md` | `8501` | `8505` | Interface Streamlit |
-| `watcher` | build `.` → `html_to_md` | — | — | Conversion automatique du dossier surveillé |
+| `webapp` | build `.` → `fast_to_md` | `8501` | `8505` | Interface Streamlit |
+| `watcher` | build `.` → `fast_to_md` | — | — | Conversion automatique du dossier surveillé |
 
-Les deux partagent le volume `./HTML2MD` (sous-dossiers `HTMLs/` et `MDs/`). Déposez vos documents dans `HTML2MD/HTMLs`, récupérez les `.md` dans `HTML2MD/MDs`.
+Les deux partagent le volume `./FAST2MD` (sous-dossiers `HTMLs/` et `MDs/`). Déposez vos documents dans `FAST2MD/Inbox`, récupérez les `.md` dans `FAST2MD/Markdown`.
 
 ## Démarrage sans Docker
 
@@ -107,15 +105,15 @@ PYTHONPATH=app uv run python app/watcher.py
 
 | Variable | Défaut | Effet |
 |---|---|---|
-| `HTML2MD_ROOT` | `/app/HTML2MD` | Racine des dossiers `HTMLs`/`MDs` |
+| `FAST2MD_ROOT` | `/app/FAST2MD` | Racine des dossiers `Inbox`/`Markdown` |
 | `WATCH_INTERVAL_SECONDS` | `3600` | Période de scan du watcher, en secondes |
 
 ## Interface en ligne de commande
 
-Le cœur est aussi exposé par la commande `html2md` (point d'entrée [`html_to_md.cli:main`](src/html_to_md/cli.py)) :
+Le cœur est aussi exposé par la commande `fast2md` (point d'entrée [`fast_to_md.cli:main`](src/fast_to_md/cli.py)) :
 
 ```bash
-uv run html2md INPUT -o OUTPUT
+uv run fast2md INPUT -o OUTPUT
 ```
 
 | Argument | Défaut | Rôle |
@@ -142,8 +140,8 @@ app/
 ├── streamlit_app.py   # interface web (3 onglets)
 ├── conversion.py      # adaptateurs cœur disque → mémoire (upload, zip)
 └── watcher.py         # surveillance horaire du dossier surveillé
-src/html_to_md/
-├── cli.py             # commande html2md
+src/fast_to_md/
+├── cli.py             # commande fast2md
 ├── sources.py         # routage par extension, préparation des documents
 ├── core.py            # orchestration : aiguillage, pipeline, statut
 ├── hygiene.py         # nettoyage du bruit des pages web
@@ -153,7 +151,7 @@ src/html_to_md/
 └── naming.py          # nommage des sorties et collisions
 tests/                 # 76 tests + fixtures HTML
 config/selectors.yaml  # profils d'extraction par site (vide par défaut)
-HTML2MD/
+FAST2MD/
 ├── HTMLs/             # déposer ici les documents
 └── MDs/               # le Markdown converti apparaît ici
 Dockerfile
