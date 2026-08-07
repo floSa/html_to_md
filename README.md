@@ -77,7 +77,7 @@ Deux services sont lancés :
 | `webapp` | build `.` → `fast_to_md` | `8501` | `8505` | Interface Streamlit |
 | `watcher` | build `.` → `fast_to_md` | — | — | Conversion automatique du dossier surveillé |
 
-Les deux partagent le volume `./FAST2MD` (sous-dossiers `HTMLs/` et `MDs/`). Déposez vos documents dans `FAST2MD/Inbox`, récupérez les `.md` dans `FAST2MD/Markdown`.
+Les deux partagent le volume `./FAST2MD` (sous-dossiers `Inbox/` et `Markdown/`). Déposez vos documents dans `FAST2MD/Inbox`, récupérez les `.md` dans `FAST2MD/Markdown`.
 
 ## Démarrage sans Docker
 
@@ -152,8 +152,8 @@ src/fast_to_md/
 tests/                 # 76 tests + fixtures HTML
 config/selectors.yaml  # profils d'extraction par site (vide par défaut)
 FAST2MD/
-├── HTMLs/             # déposer ici les documents
-└── MDs/               # le Markdown converti apparaît ici
+├── Inbox/             # déposer ici les documents
+└── Markdown/          # le Markdown converti apparaît ici
 Dockerfile
 docker-compose.yml
 ```
