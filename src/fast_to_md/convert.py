@@ -37,7 +37,9 @@ def export_data_uri_images(soup: BeautifulSoup, assets_dir: Path, min_bytes: int
             img.decompose()
             continue
 
-        if len(payload) < min_bytes:
+        # Un payload vide vient d'un data-URI tronqué ou corrompu : l'exporter
+        # produirait un fichier vide et un lien mort dans la note.
+        if not payload or len(payload) < min_bytes:
             # Icône d'interface : on la jette, alt compris (texte d'UI, pas de contenu).
             img.decompose()
             continue
@@ -49,6 +51,26 @@ def export_data_uri_images(soup: BeautifulSoup, assets_dir: Path, min_bytes: int
         img["src"] = f"{assets_dir.name}/{filename}"
         exported += 1
     return exported
+
+
+def promote_table_headers(soup: BeautifulSoup) -> None:
+    """Promeut la première ligne des tableaux sans en-tête en ``<th>``.
+
+    Un tableau sans ``<th>`` produit un Markdown avec une ligne d'en-tête vide
+    et toutes les données rejetées dans le corps. C'est le cas des tableaux
+    issus des documents bureautiques, qui ne portent pas cette sémantique.
+    """
+    for table in soup.find_all("table"):
+        if table.find("th"):
+            continue
+        first_row = table.find("tr")
+        if first_row is None:
+            continue
+        cells = first_row.find_all("td", recursive=False)
+        if not cells:
+            continue
+        for cell in cells:
+            cell.name = "th"
 
 
 # Décorations d'ancres fréquentes à l'intérieur des titres (liens « # », « ¶ »).
